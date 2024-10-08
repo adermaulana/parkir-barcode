@@ -236,7 +236,7 @@ if($_SESSION['status'] != 'login'){
           </li>
           <li class="nav-header">Fitur</li>
           <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
                 Manajemen Kendaraan
@@ -245,7 +245,7 @@ if($_SESSION['status'] != 'login'){
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="nav-icon far fa-image"></i>
               <p>
                 Keluar/Masuk
@@ -253,7 +253,7 @@ if($_SESSION['status'] != 'login'){
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a href="tarif.php" class="nav-link">
               <i class="nav-icon fas fa-columns"></i>
               <p>
                 Manajemen Tarif
@@ -261,7 +261,7 @@ if($_SESSION['status'] != 'login'){
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-columns"></i>
               <p>
                 Laporan Parkir
@@ -1283,8 +1283,7 @@ if($_SESSION['status'] != 'login'){
 <script src="../assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../assets/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="../assets/js/demo.js"></script>
+
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="../assets/js/pages/dashboard.js"></script>
 </body>
