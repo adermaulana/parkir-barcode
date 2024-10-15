@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Parkir Barcode</title>
+  <title>Starter Page - QuickStart Bootstrap Template</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
   <!-- Favicons -->
-  <link href="assets/home/img/favicon.png" rel="icon">
-  <link href="assets/home/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -18,14 +18,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/home2/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/home2/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/home2/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/home2/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/home2/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <!-- Main CSS File -->
-  <link href="assets/home2/css/main.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: QuickStart
@@ -34,65 +34,81 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-
-  <style>
-
-    .btn-no-style {
-    background: none; /* Removes the button background */
-    border: none; /* Removes the border */
-    padding: 0; /* Removes default padding */
-    cursor: pointer; /* Changes the cursor to pointer on hover */
-    }
-
-    .btn-no-style:focus {
-    outline: none; /* Removes the focus outline */
-    }
-
-
-  </style>
-
 </head>
 
-<body class="index-page">
+<body class="starter-page-page">
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
+  <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
       <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <img src="assets/home/img/logo.png" alt="">
-        <h1 class="sitename">PARKIR</h1>
+        <img src="assets/img/logo.png" alt="">
+        <h1 class="sitename">QuickStart</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="index.html#hero" class="active">Home</a></li>
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#services">Services</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="#">Dropdown 1</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  <li><a href="#">Deep Dropdown 1</a></li>
+                  <li><a href="#">Deep Dropdown 2</a></li>
+                  <li><a href="#">Deep Dropdown 3</a></li>
+                  <li><a href="#">Deep Dropdown 4</a></li>
+                  <li><a href="#">Deep Dropdown 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Dropdown 2</a></li>
+              <li><a href="#">Dropdown 3</a></li>
+              <li><a href="#">Dropdown 4</a></li>
+            </ul>
+          </li>
+          <li><a href="index.html#contact">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="login.php">Login</a>
+      <a class="btn-getstarted" href="index.html#about">Get Started</a>
 
     </div>
   </header>
 
   <main class="main">
 
-  <section id="hero" class="hero section">
-  <div class="hero-bg">
-    <img src="assets/home2/img/hero-bg-light.webp" alt="">
-  </div>
-  <div class="container text-center">
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <h1 data-aos="fade-up">Ambil Karcis Parkir</h1>
-      <button id="generateQRCode" class="btn-no-style mt-5">
-        <img src="assets/home2/img/tombol.jpg" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
-      </button>
-      <div id="qrCodeContainer"></div> <!-- To display the QR code -->
-      <a id="downloadQRCode" style="display: none;" class="btn btn-success"  download>Download QR Code</a> <!-- Hidden download link -->
-    </div>
-  </div>
-</section><!-- /Hero Section -->
+    <!-- Page Title -->
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Starter Page</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li class="current">Starter Page</li>
+          </ol>
+        </nav>
+      </div>
+    </div><!-- End Page Title -->
 
+    <!-- Starter Section Section -->
+    <section id="starter-section" class="starter-section section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Starter Section</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up">
+        <p>Use this page as a starter for your own custom pages.</p>
+      </div>
+
+    </section><!-- /Starter Section Section -->
 
   </main>
 
@@ -174,45 +190,14 @@
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
-  <script src="assets/home2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/home2/vendor/php-email-form/validate.js"></script>
-  <script src="assets/home2/vendor/aos/aos.js"></script>
-  <script src="assets/home2/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/home2/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/home/js/main.js"></script>
-
-
-  <script>
-  document.getElementById('generateQRCode').addEventListener('click', function() {
-    // Get the current time
-    const currentTime = new Date().toLocaleString(); // Format it as needed
-
-    // Send an AJAX request to the PHP script
-    fetch('generate_qrcode.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ time: currentTime })
-    })
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('qrCodeContainer').innerHTML = data; // Display the QR code
-
-      // Show the download button with the QR code image source
-      const qrCodeImg = document.querySelector('#qrCodeContainer img');
-      if (qrCodeImg) {
-        const downloadLink = document.getElementById('downloadQRCode');
-        downloadLink.href = qrCodeImg.src; // Set the download link to the QR code image
-        downloadLink.style.display = 'inline'; // Show the download button
-        downloadLink.textContent = 'Download QR Code'; // Set link text
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  });
-</script>
+  <script src="assets/js/main.js"></script>
 
 </body>
 
