@@ -88,7 +88,7 @@
         <img src="assets/home2/img/tombol.jpg" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
       </button>
       <div id="qrCodeContainer"></div> <!-- To display the QR code -->
-      <a id="downloadQRCode" style="display: none;" class="btn btn-success"  download>Download QR Code</a> <!-- Hidden download link -->
+      <a id="downloadQRCode" style="display: none;" class="btn btn-success" name="qrcode" download>Download QR Code</a> <!-- Hidden download link -->
     </div>
   </div>
 </section><!-- /Hero Section -->
@@ -211,7 +211,18 @@
       }
     })
     .catch(error => console.error('Error:', error));
+
   });
+
+
+  document.getElementById('downloadQRCode').addEventListener('click', function() {
+        // Tunggu sejenak agar unduhan selesai, kemudian refresh halaman
+        setTimeout(function() {
+            window.location.reload();
+        }, 1000); // Tunggu 1 detik sebelum refresh
+    });
+
+
 </script>
 
 </body>
