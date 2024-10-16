@@ -65,7 +65,7 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="index.html#hero" class="active">Home</a></li>
+          <li><a href="index.php" class="active">Home</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
