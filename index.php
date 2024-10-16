@@ -9,8 +9,8 @@
   <meta name="keywords" content="">
 
   <!-- Favicons -->
-  <link href="assets/home/img/favicon.png" rel="icon">
-  <link href="assets/home/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="assets/home2/img/favicon.png" rel="icon">
+  <link href="assets/home2/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -59,7 +59,7 @@
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
       <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <img src="assets/home/img/logo.png" alt="">
+        <img src="assets/home2/img/logo.png" alt="">
         <h1 class="sitename">PARKIR</h1>
       </a>
 
