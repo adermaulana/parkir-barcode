@@ -22,7 +22,7 @@ if (isset($data['time'])) {
     $qrCodeResult->saveToFile($qrCodeFileName);
 
     // Display the QR code
-    echo '<h3>Simpan Barcode Anda</h3>';
+    echo '<h3>Simpan QR-Code Anda</h3>';
     echo '<img src="' . htmlspecialchars($qrCodeFileName) . '" alt="QR Code">';
 }
 ?>

@@ -181,7 +181,7 @@
   <script src="assets/home2/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/home/js/main.js"></script>
+  <script src="assets/home2/js/main.js"></script>
 
 
   <script>
