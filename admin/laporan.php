@@ -13,22 +13,6 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_POST['simpan'])){
-    $simpan = mysqli_query($koneksi, "INSERT INTO tarif (tipe_kendaraan, durasi, tarif) VALUES ('$_POST[tipe_kendaraan]','$_POST[durasi]','$_POST[tarif]')");
-
-    if($simpan){
-        echo "<script>
-                alert('Simpan data sukses!');
-                document.location='tarif.php';
-            </script>";
-    } else {
-        echo "<script>
-                alert('Simpan data Gagal!');
-                document.location='tarif.php';
-            </script>";
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -42,12 +26,26 @@ if(isset($_POST['simpan'])){
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css">
-  <!-- DataTables -->
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="../assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="../assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="../assets/plugins/jqvmap/jqvmap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../assets/css/adminlte.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="../assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker.css">
+  <!-- summernote -->
+  <link rel="stylesheet" href="../assets/plugins/summernote/summernote-bs4.min.css">
+
   <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="../assets/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -259,15 +257,7 @@ if(isset($_POST['simpan'])){
             </a>
           </li>
           <li class="nav-item">
-            <a href="tarif.php" class="nav-link">
-              <i class="nav-icon fas fa-columns"></i>
-              <p>
-                Manajemen Tarif
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="laporan.php" class="nav-link">
               <i class="nav-icon fas fa-columns"></i>
               <p>
                 Laporan Parkir
@@ -645,13 +635,7 @@ if(isset($_POST['simpan'])){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tarif</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Tarif</li>
-            </ol>
+            <h1 class="m-0">Laporan Parkir</h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -662,42 +646,52 @@ if(isset($_POST['simpan'])){
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <!-- left column -->
-          <div class="col-md-6">
-            <!-- general form elements -->
+          <div class="col-12">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Tambah Tarif</h3>
-              </div>
               <!-- /.card-header -->
-              <!-- form start -->
-              <form method="POST">
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="tipe_kendaraan">Tipe Kendaraan</label>
-                    <input type="text" class="form-control" id="tipe_kendaraan" name="tipe_kendaraan" placeholder="Tipe Kendaraan">
-                  </div>
-                  <div class="form-group">
-                    <label for="durasi">Durasi</label>
-                    <input type="text" class="form-control" id="durasi" name="durasi" placeholder="Durasi">
-                  </div>
-                  <div class="form-group">
-                    <label for="tarif">Tarif</label>
-                    <input type="number" class="form-control" id="tarif" name="tarif" placeholder="Tarif">
-                  </div>
-                </div>
-                <!-- /.card-body -->
-
-                <div class="card-footer">
-                  <button type="submit" name="simpan" class="btn btn-primary">Submit</button>
-                </div>
-              </form>
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                    <th>Durasi Parkir</th>
+                    <th>Biaya</th>
+                    <th>Status</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>18.00</td>
+                    <td>19.00</td>
+                    <td>1 Jam</td>
+                    <td>Rp. 4000</td>
+                    <td>Selesai</td>
+                  </tr>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>No</th>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                    <th>Durasi Parkir</th>
+                    <th>Biaya</th>
+                    <th>Status</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
             </div>
             <!-- /.card -->
-
+          </div>
+          <!-- /.col -->
         </div>
         <!-- /.row -->
-      </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
@@ -720,9 +714,38 @@ if(isset($_POST['simpan'])){
 
 <!-- jQuery -->
 <script src="../assets/plugins/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="../assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
 <!-- Bootstrap 4 -->
 <script src="../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- DataTables  & Plugins -->
+<!-- ChartJS -->
+<script src="../assets/plugins/chart.js/Chart.min.js"></script>
+<!-- Sparkline -->
+<script src="../assets/plugins/sparklines/sparkline.js"></script>
+<!-- JQVMap -->
+<script src="../assets/plugins/jqvmap/jquery.vmap.min.js"></script>
+<script src="../assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+<!-- jQuery Knob Chart -->
+<script src="../assets/plugins/jquery-knob/jquery.knob.min.js"></script>
+<!-- daterangepicker -->
+<script src="../assets/plugins/moment/moment.min.js"></script>
+<script src="../assets/plugins/daterangepicker/daterangepicker.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="../assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Summernote -->
+<script src="../assets/plugins/summernote/summernote-bs4.min.js"></script>
+<!-- overlayScrollbars -->
+<script src="../assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../assets/js/adminlte.js"></script>
+
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="../assets/js/pages/dashboard.js"></script>
+
 <script src="../assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="../assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="../assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -735,10 +758,7 @@ if(isset($_POST['simpan'])){
 <script src="../assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="../assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../assets/js/adminlte.min.js"></script>
 
-<!-- Page specific script -->
 <script>
   $(function () {
     $("#example1").DataTable({
