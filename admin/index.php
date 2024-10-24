@@ -236,7 +236,7 @@ if($_SESSION['status'] != 'login'){
           </li>
           <li class="nav-header">Fitur</li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="kendaraan.php" class="nav-link">
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
                 Manajemen Kendaraan

@@ -13,6 +13,23 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+if(isset($_POST['simpan'])){
+  $simpan = mysqli_query($koneksi, "INSERT INTO kendaraan (tipe_kendaraan, harga
+) VALUES ('$_POST[tipe_kendaraan]','$_POST[harga]')");
+
+  if($simpan){
+      echo "<script>
+              alert('Simpan data sukses!');
+              document.location='kendaraan.php';
+          </script>";
+  } else {
+      echo "<script>
+              alert('Simpan data Gagal!');
+              document.location='kendaraan.php';
+          </script>";
+  }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -42,10 +59,6 @@ if($_SESSION['status'] != 'login'){
   <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="../assets/plugins/summernote/summernote-bs4.min.css">
-
-  <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -244,6 +257,7 @@ if($_SESSION['status'] != 'login'){
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
                 Manajemen Kendaraan
+
               </p>
             </a>
           </li>
@@ -630,67 +644,60 @@ if($_SESSION['status'] != 'login'){
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Laporan Parkir</h1>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
+            <h1>Tambah Jenis Kendaraan</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">General Form</li>
+            </ol>
+          </div>
+        </div>
       </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    </section>
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
-                  <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Durasi Parkir</th>
-                    <th>Biaya</th>
-                    <th>Status</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>18.00</td>
-                    <td>19.00</td>
-                    <td>1 Jam</td>
-                    <td>Rp. 4000</td>
-                    <td>Selesai</td>
-                  </tr>
-                  </tbody>
-                  <tfoot>
-                  <tr>
-                    <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Durasi Parkir</th>
-                    <th>Biaya</th>
-                    <th>Status</th>
-                  </tr>
-                  </tfoot>
-                </table>
+          <!-- left column -->
+          <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
               </div>
-              <!-- /.card-body -->
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="POST">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Tipe Kendaraan</label>
+                    <input type="text" name="tipe_kendaraan" class="form-control" id="exampleInputEmail1" placeholder="Enter Tipe Kendaraan">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Harga/Jam</label>
+                    <input type="number" name="harga" class="form-control" id="exampleInputPassword1" placeholder="Harga">
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" name="simpan" class="btn btn-primary">Submit</button>
+                </div>
+              </form>
             </div>
             <!-- /.card -->
+
+
           </div>
-          <!-- /.col -->
+          <!--/.col (left) -->
         </div>
         <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
+      </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
@@ -744,36 +751,5 @@ if($_SESSION['status'] != 'login'){
 
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="../assets/js/pages/dashboard.js"></script>
-
-<script src="../assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="../assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="../assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="../assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="../assets/plugins/jszip/jszip.min.js"></script>
-<script src="../assets/plugins/pdfmake/pdfmake.min.js"></script>
-<script src="../assets/plugins/pdfmake/vfs_fonts.js"></script>
-<script src="../assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="../assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-
-<script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
-</script>
 </body>
 </html>

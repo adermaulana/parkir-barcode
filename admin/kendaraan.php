@@ -13,6 +13,18 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+if(isset($_GET['hal']) == "hapus"){
+
+    $hapus = mysqli_query($koneksi, "DELETE FROM kendaraan WHERE id = '$_GET[id]'");
+  
+    if($hapus){
+        echo "<script>
+        alert('Hapus data sukses!');
+        document.location='kendaraan.php';
+        </script>";
+    }
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -634,7 +646,7 @@ if($_SESSION['status'] != 'login'){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Laporan Parkir</h1>
+            <h1 class="m-0">Manajemen Kendaraan</h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -649,35 +661,41 @@ if($_SESSION['status'] != 'login'){
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
-                  <thead>
+                  <a class="btn btn-success" href="tambahkendaraan.php">Tambah Data</a>
+                  <table id="example1" class="table table-bordered table-striped">
+                      <thead>
                   <tr>
                     <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Durasi Parkir</th>
-                    <th>Biaya</th>
-                    <th>Status</th>
+                    <th>Tipe Kendaraan</th>
+                    <th>Tarif</th>
+                    <th>Aksi</th>
                   </tr>
                   </thead>
                   <tbody>
+                  <?php
+                            $no = 1;
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM kendaraan");
+                            while($data = mysqli_fetch_array($tampil)):
+                        ?>
                   <tr>
-                    <td>1</td>
-                    <td>18.00</td>
-                    <td>19.00</td>
-                    <td>1 Jam</td>
-                    <td>Rp. 4000</td>
-                    <td>Selesai</td>
+                    <td><?= $no++ ?></td>
+                    <td><?= $data['tipe_kendaraan'] ?></td>
+                    <td><?= $data['harga'] ?></td>
+                    <td>
+                        <a class="btn btn-warning" href="editkendaraan.php?hal=edit&id=<?= $data['id']?>">Edit</a>
+                        <a class="btn btn-danger" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')" href="kendaraan.php?hal=hapus&id=<?= $data['id']?>">Hapus</a>
+                    </td>
                   </tr>
+                  <?php
+                            endwhile; 
+                        ?>
                   </tbody>
                   <tfoot>
                   <tr>
                     <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Durasi Parkir</th>
-                    <th>Biaya</th>
-                    <th>Status</th>
+                    <th>Tipe Kendaraan</th>
+                    <th>Tarif</th>
+                    <th>Aksi</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -761,8 +779,7 @@ if($_SESSION['status'] != 'login'){
 <script>
   $(function () {
     $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "responsive": true, "lengthChange": false, "autoWidth": false
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
       "paging": true,
