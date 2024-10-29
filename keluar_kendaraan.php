@@ -30,6 +30,42 @@
             padding: 10px;
             text-align: center;
         }
+        button {
+            background-color: #4CAF50; /* Hijau */
+            color: white; /* Teks putih */
+            border: none; /* Tanpa border */
+            padding: 10px 15px; /* Padding dalam tombol */
+            text-align: center; /* Teks di tengah */
+            text-decoration: none; /* Menghilangkan garis bawah */
+            display: inline-block; /* Membuat tombol inline */
+            font-size: 1rem; /* Ukuran font */
+            margin: 4px 2px; /* Margin */
+            cursor: pointer; /* Menampilkan pointer saat hover */
+            border-radius: 5px; /* Sudut membulat */
+        }
+        button:hover {
+            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+        }
+
+        a {
+            background-color: #4CAF50; /* Hijau */
+            color: white; /* Teks putih */
+            border: none; /* Tanpa border */
+            padding: 10px 15px; /* Padding dalam tombol */
+            text-align: center; /* Teks di tengah */
+            text-decoration: none; /* Menghilangkan garis bawah */
+            display: inline-block; /* Membuat tombol inline */
+            font-size: 1rem; /* Ukuran font */
+            margin: 4px 2px; /* Margin */
+            cursor: pointer; /* Menampilkan pointer saat hover */
+            border-radius: 5px; /* Sudut membulat */
+        }
+
+        a:hover {
+            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+
+        }
+
     </style>
 </head>
 <body>
@@ -41,6 +77,7 @@
                 <tr>
                     <th>Waktu Masuk</th>
                     <th>Waktu Keluar</th>
+                    <th>Total Bayar</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,12 +98,8 @@
         scanner.render(success, error);
 
         function success(result) {
-            const currentTime = new Date().toLocaleString(); // Mendapatkan waktu sekarang
-
             // Menampilkan hasil pemindaian
-            document.getElementById('result').innerHTML = `
-                <h2>Success!</h2>
-            `;
+            document.getElementById('result').innerHTML = `<h2>Success!</h2>`;
 
             // Mengirim data ke server menggunakan fetch
             fetch('insert_data.php', {
@@ -76,15 +109,21 @@
                 },
                 body: `qr_code_data=${encodeURIComponent(result)}`
             })
-            .then(response => response.text())
+            .then(response => response.json()) // Mengubah response menjadi JSON
             .then(data => {
                 console.log(data); // Menampilkan hasil dari server
+
+                // Menampilkan total bayar di hasil
+                if (data.total_bayar) {
+                    document.getElementById('result').innerHTML += `<p>Total Bayar: Rp ${data.total_bayar}</p>`;
+                }
 
                 // Menambahkan data ke tabel
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                    <td><a href="${result}">${result}</a></td>
-                    <td>${currentTime}</td>
+                    <td>${result}</td>
+                    <td>${new Date().toLocaleString()}</td>
+                    <td>${data.total_bayar || 'Belum Dihitung'}</td>
                 `;
                 document.getElementById('parkingTable').querySelector('tbody').appendChild(newRow);
             })

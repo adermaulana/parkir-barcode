@@ -11,6 +11,7 @@ if ($koneksi->connect_error) {
 // Mendapatkan data dari permintaan POST
 $qr_code_data = $_POST['qr_code_data'];
 $waktu_keluar = date('Y-m-d H:i:s'); // Waktu keluar saat ini
+$tarif_per_jam = 5000; // Tarif per jam dalam rupiah
 
 // Pertama, periksa apakah ada entri yang cocok dengan qr_code_data (dianggap sama dengan waktu_masuk)
 $sql = "SELECT * FROM parkir WHERE waktu_masuk = ?";
@@ -18,6 +19,8 @@ $stmt = $koneksi->prepare($sql);
 $stmt->bind_param("s", $qr_code_data);
 $stmt->execute();
 $result = $stmt->get_result();
+
+$response = []; // Menyiapkan array untuk response
 
 if ($result->num_rows > 0) {
     // Jika ada, ambil waktu_masuk
@@ -28,35 +31,50 @@ if ($result->num_rows > 0) {
     $datetime1 = new DateTime($waktu_masuk);
     $datetime2 = new DateTime($waktu_keluar);
     $interval = $datetime1->diff($datetime2);
-    $jam = $interval->h + ($interval->days * 24); // Hitung total jam
+    $jam = $interval->h + ($interval->days * 24);
+    $total_bayar = 0; // Inisialisasi total bayar
 
-    // Perbarui waktu_keluar dan selisih
-    $sql_update = "UPDATE parkir SET waktu_keluar = ?, selisih = ? WHERE waktu_masuk = ?";
+    // Jika selisih waktu kurang dari 1 jam
+    if ($jam < 1) {
+        $total_bayar = $tarif_per_jam; // Biaya minimum jika kurang dari 1 jam
+    } else {
+        // Hitung total bayar jika lebih dari 1 jam
+        $total_bayar = $jam * $tarif_per_jam;
+    }
+
+    // Perbarui waktu_keluar dan total_bayar
+    $sql_update = "UPDATE parkir SET waktu_keluar = ?, total_bayar = ? WHERE waktu_masuk = ?";
     $stmt_update = $koneksi->prepare($sql_update);
-    $stmt_update->bind_param("sis", $waktu_keluar, $jam, $qr_code_data);
+    // Menggunakan 's' untuk datetime dan 'i' untuk integer
+    $stmt_update->bind_param("sis", $waktu_keluar, $total_bayar, $qr_code_data); 
 
     if ($stmt_update->execute()) {
-        echo "Data waktu keluar dan selisih berhasil diperbarui.";
+        $response['message'] = "Data waktu keluar dan total bayar berhasil diperbarui.";
+        $response['total_bayar'] = $total_bayar; // Kirim total bayar kembali ke front-end
     } else {
-        echo "Error: " . $stmt_update->error;
+        $response['error'] = "Error: " . $stmt_update->error;
     }
 
     $stmt_update->close();
 } else {
     // Jika tidak ada, masukkan entri baru
-    $sql_insert = "INSERT INTO parkir (waktu_masuk, waktu_keluar, selisih) VALUES (?, ?, ?)";
-    $selisih = 0; // Total selisih saat masuk
+    $sql_insert = "INSERT INTO parkir (waktu_masuk, waktu_keluar, total_bayar) VALUES (?, ?, ?)";
+    $total_bayar = 4000; // Total bayar saat masuk
     $stmt_insert = $koneksi->prepare($sql_insert);
-    $stmt_insert->bind_param("ssi", $qr_code_data, $waktu_keluar, $selisih);
+    $stmt_insert->bind_param("ssi", $qr_code_data, $waktu_keluar, $total_bayar); // 'ssi' karena total_bayar adalah integer
 
     if ($stmt_insert->execute()) {
-        echo "Data berhasil disimpan.";
+        $response['message'] = "Data berhasil disimpan.";
+        $response['total_bayar'] = $total_bayar; // Kirim total bayar
     } else {
-        echo "Error: " . $stmt_insert->error;
+        $response['error'] = "Error: " . $stmt_insert->error;
     }
 
     $stmt_insert->close();
 }
+
+// Mengembalikan response dalam format JSON
+echo json_encode($response);
 
 // Menutup koneksi
 $stmt->close();
