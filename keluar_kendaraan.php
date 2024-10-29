@@ -66,7 +66,6 @@
             // Menampilkan hasil pemindaian
             document.getElementById('result').innerHTML = `
                 <h2>Success!</h2>
-                <p><a href="${result}">${result}</a></p>
             `;
 
             // Mengirim data ke server menggunakan fetch
