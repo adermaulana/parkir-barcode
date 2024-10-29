@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 24, 2024 at 04:59 PM
+-- Generation Time: Oct 29, 2024 at 07:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,15 +44,31 @@ INSERT INTO `kendaraan` (`id`, `tipe_kendaraan`, `harga`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tarif`
+-- Table structure for table `parkir`
 --
 
-CREATE TABLE `tarif` (
+CREATE TABLE `parkir` (
   `id` int(11) NOT NULL,
-  `tipe_kendaraan` varchar(255) NOT NULL,
-  `durasi` time NOT NULL,
-  `tarif` decimal(10,0) NOT NULL
+  `id_tipekendaraan` int(11) NOT NULL,
+  `waktu_masuk` datetime DEFAULT NULL,
+  `waktu_keluar` datetime DEFAULT NULL,
+  `total_bayar` decimal(10,0) DEFAULT NULL,
+  `selisih` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `parkir`
+--
+
+INSERT INTO `parkir` (`id`, `id_tipekendaraan`, `waktu_masuk`, `waktu_keluar`, `total_bayar`, `selisih`) VALUES
+(2, 0, '2024-10-29 18:48:42', NULL, NULL, 0),
+(3, 0, '2024-10-29 19:00:23', NULL, NULL, 0),
+(4, 0, '2024-10-29 19:34:48', '2024-10-29 19:41:57', NULL, 0),
+(5, 0, '2024-10-29 19:43:48', '2024-10-29 19:45:14', NULL, 0),
+(6, 0, '2024-10-29 19:48:11', NULL, NULL, 0),
+(7, 0, '2024-10-30 02:53:00', '2024-10-30 02:54:13', NULL, 0),
+(8, 0, '2024-10-30 02:55:52', '2024-10-30 02:57:17', NULL, 0),
+(9, 0, '2024-10-30 02:57:23', '2024-10-30 02:58:00', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -86,6 +102,12 @@ ALTER TABLE `kendaraan`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `parkir`
+--
+ALTER TABLE `parkir`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -101,6 +123,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `kendaraan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `parkir`
+--
+ALTER TABLE `parkir`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`

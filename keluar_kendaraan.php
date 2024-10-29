@@ -4,46 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Scanner</title>
+    <script src="./node_modules/html5-qrcode/html5-qrcode.min.js"></script>
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        #reader {
+            width: 600px;
+        }
+        #result {
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>QR Code Scanner</h1>
-    <video id="video" width="300" height="200" style="border: 1px solid black"></video>
-    <canvas id="canvas" hidden></canvas>
-    <p>Result: <span id="result"></span></p>
+    <main>
+        <div id="reader"></div>
+        <div id="result"></div>
+        <table id="parkingTable">
+            <thead>
+                <tr>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data akan ditambahkan di sini -->
+            </tbody>
+        </table>
+    </main>
 
-    <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
     <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-        const result = document.getElementById('result');
+        const scanner = new Html5QrcodeScanner('reader', { 
+            qrbox: {
+                width: 250,
+                height: 250,
+            }, 
+            fps: 20,
+        });
 
-        // Akses kamera
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(function (stream) {
-                video.srcObject = stream;
-                video.play();
+        scanner.render(success, error);
+
+        function success(result) {
+            const currentTime = new Date().toLocaleString(); // Mendapatkan waktu sekarang
+
+            // Menampilkan hasil pemindaian
+            document.getElementById('result').innerHTML = `
+                <h2>Success!</h2>
+                <p><a href="${result}">${result}</a></p>
+            `;
+
+            // Mengirim data ke server menggunakan fetch
+            fetch('insert_data.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `qr_code_data=${encodeURIComponent(result)}`
             })
-            .catch(function (err) {
-                console.log("Error accessing camera: " + err);
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // Menampilkan hasil dari server
+
+                // Menambahkan data ke tabel
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><a href="${result}">${result}</a></td>
+                    <td>${currentTime}</td>
+                `;
+                document.getElementById('parkingTable').querySelector('tbody').appendChild(newRow);
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
 
-        function scanQRCode() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, canvas.width, canvas.height);
-
-            if (code) {
-                result.textContent = code.data; // QR code result
-            } else {
-                requestAnimationFrame(scanQRCode); // Cek ulang
-            }
+            scanner.clear(); // Menghapus pemindaian yang sudah tidak diperlukan
         }
 
-        video.addEventListener('play', scanQRCode);
+        function error(err) {
+            console.error(err); // Mencetak kesalahan ke konsol
+        }
     </script>
 </body>
 </html>
