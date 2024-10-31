@@ -13,6 +13,18 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+if(isset($_GET['hal']) == "hapus"){
+
+    $hapus = mysqli_query($koneksi, "DELETE FROM kendaraan WHERE id = '$_GET[id]'");
+  
+    if($hapus){
+        echo "<script>
+        alert('Hapus data sukses!');
+        document.location='kendaraan.php';
+        </script>";
+    }
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -42,6 +54,10 @@ if($_SESSION['status'] != 'login'){
   <link rel="stylesheet" href="../assets/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="../assets/plugins/summernote/summernote-bs4.min.css">
+
+  <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -240,7 +256,6 @@ if($_SESSION['status'] != 'login'){
               <i class="nav-icon far fa-calendar-alt"></i>
               <p>
                 Manajemen Kendaraan
-
               </p>
             </a>
           </li>
@@ -631,13 +646,7 @@ if($_SESSION['status'] != 'login'){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
+            <h1 class="m-0">Keluar/Masuk Kendaraan</h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -647,58 +656,100 @@ if($_SESSION['status'] != 'login'){
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
-
-                <p>Jumlah Kendaraan Parkir</p>
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body">
+                  <h4 class="m-0">Kendaraan Masuk</h4>
+                  <table id="example1" class="table table-bordered table-striped">
+                      <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                    <th>Total Bayar</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <?php
+                            $no = 1;
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM parkir WHERE waktu_keluar IS NULL");
+                            while($data = mysqli_fetch_array($tampil)):
+                        ?>
+                  <tr>
+                    <td><?= $no++ ?></td>
+                    <td><?= $data['waktu_masuk'] ?></td>
+                    <td><?= isset($data['waktu_keluar']) && $data['waktu_keluar'] !== '' ? $data['waktu_keluar'] : 'Belum keluar' ?></td>
+                    <td><?= isset($data['total_bayar']) && $data['total_bayar'] !== '' ? number_format($data['total_bayar'], 0, ',', '.') : 'Belum dihitung' ?></td>
+                  </tr>
+                  <?php
+                            endwhile; 
+                        ?>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>No</th>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                    <th>Total Bayar</th>
+                  </tr>
+                  </tfoot>
+                </table>
               </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <!-- /.card-body -->
             </div>
+            <!-- /.card -->
           </div>
-          <!-- ./col -->
-          <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>Rp. 5000000</h3>
-
-                <p>Pemasukan</p>
+          <div class="col-12">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body">
+                  <h4 class="m-0">Kendaraan Keluar</h4>
+                  <table id="keluar" class="table table-bordered table-striped">
+                      <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                    <th>Total Bayar</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <?php
+                            $no = 1;
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM parkir WHERE waktu_masuk IS NOT NULL AND waktu_masuk != '' AND waktu_keluar IS NOT NULL AND waktu_keluar != ''");
+                            while($data = mysqli_fetch_array($tampil)):
+                        ?>
+                  <tr>
+                    <td><?= $no++ ?></td>
+                    <td><?= $data['waktu_masuk'] ?></td>
+                    <td><?= $data['waktu_keluar'] ?></td>
+                    <td><?= $data['total_bayar'] ?></td>
+                  </tr>
+                  <?php
+                            endwhile; 
+                        ?>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>No</th>
+                    <th>Waktu Masuk</th>
+                    <th>Waktu Keluar</th>
+                    <th>Total Bayar</th>
+                  </tr>
+                  </tfoot>
+                </table>
               </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <!-- /.card-body -->
             </div>
+            <!-- /.card -->
           </div>
-          <!-- ./col -->
-          <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>8000</h3>
-
-                <p>Total Kendaraan</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
+          <!-- /.col -->
         </div>
         <!-- /.row -->
-        <!-- Main row -->
-
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
@@ -752,5 +803,40 @@ if($_SESSION['status'] != 'login'){
 
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="../assets/js/pages/dashboard.js"></script>
+
+<script src="../assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="../assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="../assets/plugins/jszip/jszip.min.js"></script>
+<script src="../assets/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="../assets/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="../assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="../assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    $("#keluar").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
 </body>
 </html>

@@ -277,7 +277,7 @@ if (isset($_POST['simpan'])) {
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="keluar_masuk.php" class="nav-link">
               <i class="nav-icon far fa-image"></i>
               <p>
                 Keluar/Masuk
