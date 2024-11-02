@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 29, 2024 at 07:59 PM
+-- Generation Time: Nov 02, 2024 at 07:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,14 +33,6 @@ CREATE TABLE `kendaraan` (
   `harga` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `kendaraan`
---
-
-INSERT INTO `kendaraan` (`id`, `tipe_kendaraan`, `harga`) VALUES
-(3, 'Mobil', 10000),
-(4, 'Motor ', 4000);
-
 -- --------------------------------------------------------
 
 --
@@ -49,26 +41,22 @@ INSERT INTO `kendaraan` (`id`, `tipe_kendaraan`, `harga`) VALUES
 
 CREATE TABLE `parkir` (
   `id` int(11) NOT NULL,
-  `id_tipekendaraan` int(11) NOT NULL,
   `waktu_masuk` datetime DEFAULT NULL,
   `waktu_keluar` datetime DEFAULT NULL,
   `total_bayar` decimal(10,0) DEFAULT NULL,
-  `selisih` int(255) NOT NULL
+  `status` enum('Pending','Terbayar') NOT NULL DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `parkir`
 --
 
-INSERT INTO `parkir` (`id`, `id_tipekendaraan`, `waktu_masuk`, `waktu_keluar`, `total_bayar`, `selisih`) VALUES
-(2, 0, '2024-10-29 18:48:42', NULL, NULL, 0),
-(3, 0, '2024-10-29 19:00:23', NULL, NULL, 0),
-(4, 0, '2024-10-29 19:34:48', '2024-10-29 19:41:57', NULL, 0),
-(5, 0, '2024-10-29 19:43:48', '2024-10-29 19:45:14', NULL, 0),
-(6, 0, '2024-10-29 19:48:11', NULL, NULL, 0),
-(7, 0, '2024-10-30 02:53:00', '2024-10-30 02:54:13', NULL, 0),
-(8, 0, '2024-10-30 02:55:52', '2024-10-30 02:57:17', NULL, 0),
-(9, 0, '2024-10-30 02:57:23', '2024-10-30 02:58:00', NULL, 0);
+INSERT INTO `parkir` (`id`, `waktu_masuk`, `waktu_keluar`, `total_bayar`, `status`) VALUES
+(14, '2024-11-01 05:11:14', '2024-11-01 05:22:17', 5000, 'Terbayar'),
+(16, '2024-11-03 02:11:11', '2024-11-03 02:11:25', 5000, 'Terbayar'),
+(17, '2024-11-03 02:23:02', '2024-11-03 02:23:11', 5000, 'Terbayar'),
+(18, '2024-11-03 02:24:44', '2024-11-03 02:25:04', 5000, 'Terbayar'),
+(19, '2024-11-03 02:25:38', '2024-11-03 02:25:48', 5000, 'Terbayar');
 
 -- --------------------------------------------------------
 
@@ -128,7 +116,7 @@ ALTER TABLE `kendaraan`
 -- AUTO_INCREMENT for table `parkir`
 --
 ALTER TABLE `parkir`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `users`

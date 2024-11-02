@@ -58,6 +58,8 @@ if(isset($_GET['hal']) == "hapus"){
   <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.0.18/sweetalert2.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -702,48 +704,68 @@ if(isset($_GET['hal']) == "hapus"){
             <!-- /.card -->
           </div>
           <div class="col-12">
-            <div class="card">
-              <!-- /.card-header -->
-              <div class="card-body">
-                  <h4 class="m-0">Kendaraan Keluar</h4>
-                  <table id="keluar" class="table table-bordered table-striped">
-                      <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Total Bayar</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM parkir WHERE waktu_masuk IS NOT NULL AND waktu_masuk != '' AND waktu_keluar IS NOT NULL AND waktu_keluar != ''");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                  <tr>
-                    <td><?= $no++ ?></td>
-                    <td><?= $data['waktu_masuk'] ?></td>
-                    <td><?= $data['waktu_keluar'] ?></td>
-                    <td><?= $data['total_bayar'] ?></td>
-                  </tr>
-                  <?php
-                            endwhile; 
-                        ?>
-                  </tbody>
-                  <tfoot>
-                  <tr>
-                    <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Total Bayar</th>
-                  </tr>
-                  </tfoot>
-                </table>
+              <div class="card">
+                  <div class="card-body">
+                      <h4 class="m-0">Kendaraan Keluar</h4>
+                      <table id="keluar" class="table table-bordered table-striped">
+                          <thead>
+                              <tr>
+                                  <th>No</th>
+                                  <th>Waktu Masuk</th>
+                                  <th>Waktu Keluar</th>
+                                  <th>Total Bayar</th>
+                                  <th>Status</th>
+                                  <th>Aksi</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <?php 
+                              $no = 1;
+                              $tampil = mysqli_query($koneksi, "SELECT * FROM parkir WHERE waktu_masuk IS NOT NULL AND waktu_masuk != '' AND waktu_keluar IS NOT NULL AND waktu_keluar != '' ORDER BY id DESC");
+                              while($data = mysqli_fetch_array($tampil)): 
+                              ?>
+                              <tr>
+                                  <td><?= $no++ ?></td>
+                                  <td><?= $data['waktu_masuk'] ?></td>
+                                  <td><?= $data['waktu_keluar'] ?></td>
+                                  <td>Rp <?= number_format($data['total_bayar'], 0, ',', '.') ?></td>
+                                  <td>
+                                      <?php if($data['status'] == 'Terbayar'): ?>
+                                          <span class="badge badge-success">Sudah Dibayar</span>
+                                      <?php else: ?>
+                                          <span class="badge badge-warning">Belum Dibayar</span>
+                                      <?php endif; ?>
+                                  </td>
+                                  <td>
+                                      <?php if($data['status'] == 'Pending'): ?>
+                                          <form action="konfirmasi_pembayaran.php" method="POST" onsubmit="return konfirmasiPembayaran()">
+                                              <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                                              <button type="submit" name="konfirmasi" class="btn btn-primary btn-sm">
+                                                  Konfirmasi Pembayaran
+                                              </button>
+                                          </form>
+                                      <?php else: ?>
+                                          <button type="button" class="btn btn-success btn-sm" disabled>
+                                              <i class="fas fa-check"></i> Lunas
+                                          </button>
+                                      <?php endif; ?>
+                                  </td>
+                              </tr>
+                              <?php endwhile; ?>
+                          </tbody>
+                          <tfoot>
+                              <tr>
+                                  <th>No</th>
+                                  <th>Waktu Masuk</th>
+                                  <th>Waktu Keluar</th>
+                                  <th>Total Bayar</th>
+                                  <th>Status</th>
+                                  <th>Aksi</th>
+                              </tr>
+                          </tfoot>
+                      </table>
+                  </div>
               </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
           </div>
           <!-- /.col -->
         </div>
@@ -838,5 +860,15 @@ if(isset($_GET['hal']) == "hapus"){
     });
   });
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.0.18/sweetalert2.all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+function konfirmasiPembayaran() {
+    return confirm("Apakah Anda yakin ingin mengkonfirmasi pembayaran ini?");
+}
+</script>
+
 </body>
 </html>
