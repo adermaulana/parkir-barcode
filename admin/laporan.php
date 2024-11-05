@@ -649,38 +649,58 @@ if($_SESSION['status'] != 'login'){
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+              <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Durasi Parkir</th>
-                    <th>Biaya</th>
-                    <th>Status</th>
+                      <th>No</th>
+                      <th>Waktu Masuk</th>
+                      <th>Waktu Keluar</th>
+                      <th>Durasi</th>
+                      <th>Total Bayar</th>
+                      <th>Status</th>
                   </tr>
                   </thead>
                   <tbody>
+                  <?php
+                      $no = 1;
+                      $tampil = mysqli_query($koneksi, "SELECT * FROM parkir 
+                                                      WHERE status = 'Terbayar'");
+                      while($data = mysqli_fetch_array($tampil)):
+                          // Konversi string waktu ke object DateTime
+                          $waktu_masuk = new DateTime($data['waktu_masuk']);
+                          $waktu_keluar = new DateTime($data['waktu_keluar']);
+                          
+                          // Hitung selisih waktu
+                          $interval = $waktu_masuk->diff($waktu_keluar);
+                          
+                          // Hitung total jam dan menit
+                          $total_menit = ($interval->h * 60) + $interval->i;
+                          
+                          // Jika kurang dari 60 menit, genapkan jadi 1 jam
+                          // Jika lebih, bulatkan ke atas ke jam terdekat
+                          $durasi_jam = ($total_menit < 60) ? 1 : ceil($total_menit / 60);
+                  ?>
                   <tr>
-                    <td>1</td>
-                    <td>18.00</td>
-                    <td>19.00</td>
-                    <td>1 Jam</td>
-                    <td>Rp. 4000</td>
-                    <td>Selesai</td>
+                      <td><?php echo $no++; ?></td>
+                      <td><?php echo $data['waktu_masuk']; ?></td>
+                      <td><?php echo $data['waktu_keluar']; ?></td>
+                      <td><?php echo $durasi_jam; ?> Jam</td>
+                      <td>Rp. <?php echo number_format($data['total_bayar'], 0, ',', '.'); ?></td>
+                      <td><?php echo $data['status']; ?></td>
                   </tr>
+                  <?php endwhile; ?>
                   </tbody>
                   <tfoot>
                   <tr>
-                    <th>No</th>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Durasi Parkir</th>
-                    <th>Biaya</th>
-                    <th>Status</th>
+                      <th>No</th>
+                      <th>Waktu Masuk</th>
+                      <th>Waktu Keluar</th>
+                      <th>Durasi</th>
+                      <th>Total Bayar</th>
+                      <th>Status</th>
                   </tr>
                   </tfoot>
-                </table>
+              </table>
               </div>
               <!-- /.card-body -->
             </div>
