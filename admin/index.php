@@ -13,6 +13,22 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+$parkir = "SELECT COUNT(*) as id FROM parkir WHERE status = 'Pending'";
+$resultparkir = $koneksi->query($parkir);
+$rowparkir = $resultparkir->fetch_assoc();
+$jumlah_parkir = $rowparkir["id"];
+
+$jenis_kendaraan = "SELECT COUNT(*) as id FROM kendaraan";
+$resultjenis_kendaraan = $koneksi->query($jenis_kendaraan);
+$rowjenis_kendaraan = $resultjenis_kendaraan->fetch_assoc();
+$jumlah_jenis_kendaraan = $rowjenis_kendaraan["id"];
+
+
+$pemasukan = "SELECT SUM(total_bayar) as total_harga_bayar FROM parkir WHERE status = 'Terbayar'";
+$resultpemasukan = $koneksi->query($pemasukan);
+$rowpemasukan = $resultpemasukan->fetch_assoc();
+$total_pemasukan = $rowpemasukan["total_harga_bayar"];
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +36,7 @@ if($_SESSION['status'] != 'login'){
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Dashboard</title>
+  <title>Admin</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -653,14 +669,14 @@ if($_SESSION['status'] != 'login'){
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <h3><?= $jumlah_parkir ?></h3>
 
                 <p>Jumlah Kendaraan Parkir</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="keluar_masuk.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -668,14 +684,15 @@ if($_SESSION['status'] != 'login'){
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>Rp. 5000000</h3>
+              <h3>Rp <?= number_format($total_pemasukan, 0, ',', '.') ?></h3>
+
 
                 <p>Pemasukan</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="#" class="small-box-footer"><i class="fa fa-archive"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -683,14 +700,14 @@ if($_SESSION['status'] != 'login'){
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>8000</h3>
+                <h3><?= $jumlah_jenis_kendaraan ?></h3>
 
-                <p>Total Kendaraan</p>
+                <p>Jenis Kendaraan</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="kendaraan.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>

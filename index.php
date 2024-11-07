@@ -77,24 +77,38 @@
   </header>
 
   <main class="main">
+    <section id="hero" class="hero section">
+      <div class="hero-bg">
+        <img src="assets/home2/img/hero-bg-light.webp" alt="">
+      </div>
+      <div class="container text-center">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <h1 data-aos="fade-up">Ambil Karcis Parkir</h1>
+          <div class="form-group mt-5">
+            <select class="form-control" id="vehicleType">
+            <option value="" selected>Pilih tipe kendaraan</option>
+            <?php
 
-  <section id="hero" class="hero section">
-  <div class="hero-bg">
-    <img src="assets/home2/img/hero-bg-light.webp" alt="">
-  </div>
-  <div class="container text-center">
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <h1 data-aos="fade-up">Ambil Karcis Parkir</h1>
-      <button id="generateQRCode" class="btn-no-style mt-5">
-        <img src="assets/home2/img/tombol.jpg" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
-      </button>
-      <div id="qrCodeContainer"></div> <!-- To display the QR code -->
-      <a id="downloadQRCode" style="display: none;" class="btn btn-success" name="qrcode" download>Download QR Code</a> <!-- Hidden download link -->
-    </div>
-  </div>
-</section><!-- /Hero Section -->
+            include 'koneksi.php';
 
-
+                $no = 1;
+                $tampil = mysqli_query($koneksi, "SELECT * FROM kendaraan");
+                while($data = mysqli_fetch_array($tampil)):
+            ?>
+              <option value="<?= $data['id'] ?>"><?= $data['tipe_kendaraan'] ?></option>
+              <?php
+                endwhile; 
+              ?>
+            </select>
+          </div>
+          <button id="generateQRCode" class="btn-no-style mt-4">
+            <img src="assets/home2/img/tombol.jpg" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
+          </button>
+          <div id="qrCodeContainer"></div> <!-- To display the QR code -->
+          <a id="downloadQRCode" style="display: none;" class="btn btn-success" name="qrcode" download>Download QR Code</a> <!-- Hidden download link -->
+        </div>
+      </div>
+    </section><!-- /Hero Section -->
   </main>
 
   <footer id="footer" class="footer position-relative light-background">
@@ -186,45 +200,50 @@
 
 
   <script>
-  document.getElementById('generateQRCode').addEventListener('click', function() {
-    // Get the current time
-    const currentTime = new Date().toLocaleString(); // Format it as needed
+    document.getElementById('generateQRCode').addEventListener('click', function() {
+      // Get the selected vehicle type
+      const vehicleType = document.getElementById('vehicleType').value;
 
-    // Send an AJAX request to the PHP script
-    fetch('generate_qrcode.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ time: currentTime })
-    })
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('qrCodeContainer').innerHTML = data; // Display the QR code
-
-      // Show the download button with the QR code image source
-      const qrCodeImg = document.querySelector('#qrCodeContainer img');
-      if (qrCodeImg) {
-        const downloadLink = document.getElementById('downloadQRCode');
-        downloadLink.href = qrCodeImg.src; // Set the download link to the QR code image
-        downloadLink.style.display = 'inline'; // Show the download button
-        downloadLink.textContent = 'Download QR Code'; // Set link text
+      // Validasi apakah tipe kendaraan sudah dipilih
+      if (vehicleType === '') {
+        alert('Silakan pilih tipe kendaraan terlebih dahulu.');
+        return;
       }
-    })
-    .catch(error => console.error('Error:', error));
 
-  });
+      // Get the current time
+      const currentTime = new Date().toLocaleString();
 
+      // Send an AJAX request to the PHP script
+      fetch('generate_qrcode.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ time: currentTime, vehicleType: vehicleType })
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('qrCodeContainer').innerHTML = data; // Display the QR code
 
-  document.getElementById('downloadQRCode').addEventListener('click', function() {
-        // Tunggu sejenak agar unduhan selesai, kemudian refresh halaman
-        setTimeout(function() {
-            window.location.reload();
-        }, 1000); // Tunggu 1 detik sebelum refresh
+        // Show the download button with the QR code image source
+        const qrCodeImg = document.querySelector('#qrCodeContainer img');
+        if (qrCodeImg) {
+          const downloadLink = document.getElementById('downloadQRCode');
+          downloadLink.href = qrCodeImg.src; // Set the download link to the QR code image
+          downloadLink.style.display = 'inline'; // Show the download button
+          downloadLink.textContent = 'Download QR Code'; // Set link text
+        }
+      })
+      .catch(error => console.error('Error:', error));
     });
 
-
-</script>
+    document.getElementById('downloadQRCode').addEventListener('click', function() {
+      // Tunggu sejenak agar unduhan selesai, kemudian refresh halaman
+      setTimeout(function() {
+        window.location.reload();
+      }, 1000); // Tunggu 1 detik sebelum refresh
+    });
+  </script>
 
 </body>
 

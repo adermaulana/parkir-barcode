@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2024 at 07:26 PM
+-- Generation Time: Nov 07, 2024 at 11:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,6 +33,14 @@ CREATE TABLE `kendaraan` (
   `harga` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `kendaraan`
+--
+
+INSERT INTO `kendaraan` (`id`, `tipe_kendaraan`, `harga`) VALUES
+(5, 'Motor', 4000),
+(6, 'Mobil', 6000);
+
 -- --------------------------------------------------------
 
 --
@@ -41,22 +49,12 @@ CREATE TABLE `kendaraan` (
 
 CREATE TABLE `parkir` (
   `id` int(11) NOT NULL,
+  `id_kendaraan` int(11) NOT NULL,
   `waktu_masuk` datetime DEFAULT NULL,
   `waktu_keluar` datetime DEFAULT NULL,
   `total_bayar` decimal(10,0) DEFAULT NULL,
   `status` enum('Pending','Terbayar') NOT NULL DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `parkir`
---
-
-INSERT INTO `parkir` (`id`, `waktu_masuk`, `waktu_keluar`, `total_bayar`, `status`) VALUES
-(14, '2024-11-01 05:11:14', '2024-11-01 05:22:17', 5000, 'Terbayar'),
-(16, '2024-11-03 02:11:11', '2024-11-03 02:11:25', 5000, 'Terbayar'),
-(17, '2024-11-03 02:23:02', '2024-11-03 02:23:11', 5000, 'Terbayar'),
-(18, '2024-11-03 02:24:44', '2024-11-03 02:25:04', 5000, 'Terbayar'),
-(19, '2024-11-03 02:25:38', '2024-11-03 02:25:48', 5000, 'Terbayar');
 
 -- --------------------------------------------------------
 
@@ -93,7 +91,8 @@ ALTER TABLE `kendaraan`
 -- Indexes for table `parkir`
 --
 ALTER TABLE `parkir`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_kendaraan` (`id_kendaraan`);
 
 --
 -- Indexes for table `users`
@@ -110,19 +109,29 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `kendaraan`
 --
 ALTER TABLE `kendaraan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `parkir`
 --
 ALTER TABLE `parkir`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `parkir`
+--
+ALTER TABLE `parkir`
+  ADD CONSTRAINT `parkir_ibfk_1` FOREIGN KEY (`id_kendaraan`) REFERENCES `kendaraan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -10,14 +10,16 @@ include 'koneksi.php'; // Include your database connection
 $data = json_decode(file_get_contents('php://input'), true);
 
 date_default_timezone_set('Asia/Singapore');
-// Check if 'time' is set
-if (isset($data['time'])) {
+
+// Check if 'time' and 'vehicleType' are set
+if (isset($data['time']) && isset($data['vehicleType'])) {
     // Use the current time in DATETIME format
     $currentTime = date('Y-m-d H:i:s');
+    $vehicleType = $data['vehicleType'];
 
-    // Insert the timestamp into the 'parkir' table
-    $stmt = $koneksi->prepare("INSERT INTO parkir (waktu_masuk) VALUES (?)");
-    $stmt->bind_param("s", $currentTime);
+    // Insert the timestamp and vehicle type into the 'parkir' table
+    $stmt = $koneksi->prepare("INSERT INTO parkir (waktu_masuk, id_kendaraan) VALUES (?, ?)");
+    $stmt->bind_param("si", $currentTime, $vehicleType);
     
     if ($stmt->execute()) {
         // Insertion successful
@@ -33,10 +35,11 @@ if (isset($data['time'])) {
         mkdir($uploadsDir, 0777, true); // Create with permissions if it doesn't exist
     }
 
-    // Create QR code based on the current time
+    // Create QR code based on the current time and vehicle type
+    $qrCodeData = $currentTime;
     $qrCodeResult = Builder::create()
-        ->data($currentTime) // Data is the current time
-        ->size(300)          // Size of the QR code
+        ->data($qrCodeData) // Data is the current time and vehicle type
+        ->size(300)         // Size of the QR code
         ->build();
 
     // Save QR code as a PNG file in the uploads directory

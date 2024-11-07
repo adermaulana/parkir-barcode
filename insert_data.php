@@ -11,10 +11,12 @@ if ($koneksi->connect_error) {
 // Mendapatkan data dari permintaan POST
 $qr_code_data = $_POST['qr_code_data'];
 $waktu_keluar = date('Y-m-d H:i:s'); // Waktu keluar saat ini
-$tarif_per_jam = 5000; // Tarif per jam dalam rupiah
 
 // Pertama, periksa apakah ada entri yang cocok dengan qr_code_data (dianggap sama dengan waktu_masuk)
-$sql = "SELECT * FROM parkir WHERE waktu_masuk = ?";
+$sql = "SELECT p.*, k.harga
+        FROM parkir p
+        JOIN kendaraan k ON p.id_kendaraan = k.id
+        WHERE p.waktu_masuk = ?";
 $stmt = $koneksi->prepare($sql);
 $stmt->bind_param("s", $qr_code_data);
 $stmt->execute();
@@ -23,9 +25,10 @@ $result = $stmt->get_result();
 $response = []; // Menyiapkan array untuk response
 
 if ($result->num_rows > 0) {
-    // Jika ada, ambil waktu_masuk
+    // Jika ada, ambil waktu_masuk dan tarif_parkir
     $row = $result->fetch_assoc();
     $waktu_masuk = $row['waktu_masuk'];
+    $tarif_parkir = $row['harga'];
 
     // Hitung selisih waktu dalam jam
     $datetime1 = new DateTime($waktu_masuk);
@@ -36,10 +39,10 @@ if ($result->num_rows > 0) {
 
     // Jika selisih waktu kurang dari 1 jam
     if ($jam < 1) {
-        $total_bayar = $tarif_per_jam; // Biaya minimum jika kurang dari 1 jam
+        $total_bayar = $tarif_parkir; // Biaya minimum jika kurang dari 1 jam
     } else {
         // Hitung total bayar jika lebih dari 1 jam
-        $total_bayar = $jam * $tarif_per_jam;
+        $total_bayar = $jam * $tarif_parkir;
     }
 
     // Perbarui waktu_keluar dan total_bayar
@@ -58,10 +61,11 @@ if ($result->num_rows > 0) {
     $stmt_update->close();
 } else {
     // Jika tidak ada, masukkan entri baru
-    $sql_insert = "INSERT INTO parkir (waktu_masuk, waktu_keluar, total_bayar) VALUES (?, ?, ?)";
+    $sql_insert = "INSERT INTO parkir (id_kendaraan, waktu_masuk, waktu_keluar, total_bayar) VALUES (?, ?, ?, ?)";
+    $id_kendaraan = null; // Isi dengan ID kendaraan yang didapatkan dari QR code
     $total_bayar = 4000; // Total bayar saat masuk
     $stmt_insert = $koneksi->prepare($sql_insert);
-    $stmt_insert->bind_param("ssi", $qr_code_data, $waktu_keluar, $total_bayar); // 'ssi' karena total_bayar adalah integer
+    $stmt_insert->bind_param("issi", $id_kendaraan, $qr_code_data, $waktu_keluar, $total_bayar); // 'issi' karena id_kendaraan adalah integer
 
     if ($stmt_insert->execute()) {
         $response['message'] = "Data berhasil disimpan.";

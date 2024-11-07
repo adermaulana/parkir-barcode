@@ -20,7 +20,7 @@ if($_SESSION['status'] != 'login'){
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Dashboard</title>
+  <title>Admin</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -662,23 +662,17 @@ if($_SESSION['status'] != 'login'){
                   </thead>
                   <tbody>
                   <?php
-                      $no = 1;
-                      $tampil = mysqli_query($koneksi, "SELECT * FROM parkir 
-                                                      WHERE status = 'Terbayar'");
-                      while($data = mysqli_fetch_array($tampil)):
-                          // Konversi string waktu ke object DateTime
-                          $waktu_masuk = new DateTime($data['waktu_masuk']);
-                          $waktu_keluar = new DateTime($data['waktu_keluar']);
-                          
-                          // Hitung selisih waktu
-                          $interval = $waktu_masuk->diff($waktu_keluar);
-                          
-                          // Hitung total jam dan menit
-                          $total_menit = ($interval->h * 60) + $interval->i;
-                          
-                          // Jika kurang dari 60 menit, genapkan jadi 1 jam
-                          // Jika lebih, bulatkan ke atas ke jam terdekat
-                          $durasi_jam = ($total_menit < 60) ? 1 : ceil($total_menit / 60);
+                  $no = 1;
+                  $tampil = mysqli_query($koneksi, "SELECT * FROM parkir WHERE status = 'Terbayar'");
+                  while($data = mysqli_fetch_array($tampil)):
+                      // Konversi string waktu ke object DateTime
+                      $waktu_masuk = new DateTime($data['waktu_masuk']);
+                      $waktu_keluar = new DateTime($data['waktu_keluar']);
+
+                      // Hitung selisih waktu
+                      $interval = $waktu_masuk->diff($waktu_keluar);
+                      $total_menit = ($interval->d * 24 * 60) + ($interval->h * 60) + $interval->i;
+                      $durasi_jam = ($total_menit < 60) ? 1 : ceil($total_menit / 60);
                   ?>
                   <tr>
                       <td><?php echo $no++; ?></td>
