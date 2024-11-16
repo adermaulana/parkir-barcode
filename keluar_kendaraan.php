@@ -6,102 +6,262 @@
     <title>QR Code Scanner</title>
     <script src="./node_modules/html5-qrcode/html5-qrcode.min.js"></script>
     <style>
-        main {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #1a1a1a;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .scanner-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .scanner-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title i {
+            font-size: 1.1rem;
+            color: #4CAF50;
+        }
+
+        #reader {
+            width: 100% !important;
+            border-radius: 8px;
+            overflow: hidden;
+            border: none !important;
+        }
+
+        #reader video {
+            border-radius: 8px;
+        }
+
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        #result.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #result.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .button-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 20px;
-        }
-        #reader {
-            width: 600px;
-        }
-        #result {
-            text-align: center;
-            font-size: 1.5rem;
-        }
-        table {
-            width: 80%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #000;
-            padding: 10px;
-            text-align: center;
-        }
-        button {
-            background-color: #4CAF50; /* Hijau */
-            color: white; /* Teks putih */
-            border: none; /* Tanpa border */
-            padding: 10px 15px; /* Padding dalam tombol */
-            text-align: center; /* Teks di tengah */
-            text-decoration: none; /* Menghilangkan garis bawah */
-            display: inline-block; /* Membuat tombol inline */
-            font-size: 1rem; /* Ukuran font */
-            margin: 4px 2px; /* Margin */
-            cursor: pointer; /* Menampilkan pointer saat hover */
-            border-radius: 5px; /* Sudut membulat */
-        }
-        button:hover {
-            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         a {
-            background-color: #4CAF50; /* Hijau */
-            color: white; /* Teks putih */
-            border: none; /* Tanpa border */
-            padding: 10px 15px; /* Padding dalam tombol */
-            text-align: center; /* Teks di tengah */
-            text-decoration: none; /* Menghilangkan garis bawah */
-            display: inline-block; /* Membuat tombol inline */
-            font-size: 1rem; /* Ukuran font */
-            margin: 4px 2px; /* Margin */
-            cursor: pointer; /* Menampilkan pointer saat hover */
-            border-radius: 5px; /* Sudut membulat */
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        a:hover {
-            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
-
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
         }
 
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+
+
+
+        @keyframes scan {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(300px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .amount {
+            font-weight: bold;
+            color: #4CAF50;
+        }
     </style>
 </head>
 <body>
-    <main>
-        <div id="reader"></div>
-        <div id="result"></div>
-        <table id="parkingTable">
-            <thead>
-                <tr>
-                    <th>Waktu Masuk</th>
-                    <th>Waktu Keluar</th>
-                    <th>Total Bayar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data akan ditambahkan di sini -->
-            </tbody>
-        </table>
-    </main>
+    <div class="container">
+        <div class="header">
+            <h1>QR Code Scanner Parkir</h1>
+            <p>Scan tiket parkir untuk pembayaran</p>
+        </div>
+
+        <div class="scanner-container">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-qrcode"></i>
+                    Scanner
+                </h2>
+                <div style="position: relative;">
+                    <div class="scan-animation"></div>
+                    <div id="reader"></div>
+                </div>
+                <div id="result"></div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-history"></i>
+                    Riwayat
+                </h2>
+                <table id="parkingTable">
+                    <thead>
+                        <tr>
+                            <th>Waktu Masuk</th>
+                            <th>Waktu Keluar</th>
+                            <th>Jumlah Pembayaran</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a href="index.php" class="secondary">
+                Kembali
+            </a>
+        </div>
+
+    </div>
+
+    
 
     <script>
-        const scanner = new Html5QrcodeScanner('reader', { 
-            qrbox: {
-                width: 250,
-                height: 250,
-            }, 
-            fps: 20,
-        });
+        let isScanning = true;
+        let scanner;
 
-        scanner.render(success, error);
+        // Initialize scanner
+        function initializeScanner() {
+            scanner = new Html5QrcodeScanner('reader', { 
+                qrbox: {
+                    width: 250,
+                    height: 250,
+                }, 
+                fps: 20,
+            });
+            scanner.render(onScanSuccess, onScanError);
+        }
 
-        function success(result) {
-            // Menampilkan hasil pemindaian
-            document.getElementById('result').innerHTML = `<h2>Success!</h2>`;
+        // Handle successful scan
+        function onScanSuccess(result) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h2>Sukses!</h2>';
+            resultDiv.className = 'success';
 
-            // Mengirim data ke server menggunakan fetch
+            // Send data to server
             fetch('insert_data.php', {
                 method: 'POST',
                 headers: {
@@ -109,34 +269,86 @@
                 },
                 body: `qr_code_data=${encodeURIComponent(result)}`
             })
-            .then(response => response.json()) // Mengubah response menjadi JSON
+            .then(response => response.json())
             .then(data => {
-                console.log(data); // Menampilkan hasil dari server
+                console.log(data);
 
-                // Menampilkan total bayar di hasil
                 if (data.total_bayar) {
-                    document.getElementById('result').innerHTML += `<p>Total Bayar: Rp ${data.total_bayar}</p>`;
+                    resultDiv.innerHTML += `<p>Total Pembayaran: <span class="amount">Rp ${formatNumber(data.total_bayar)}</span></p>`;
                 }
 
-                // Menambahkan data ke tabel
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${result}</td>
-                    <td>${new Date().toLocaleString()}</td>
-                    <td>${data.total_bayar || 'Belum Dihitung'}</td>
-                `;
-                document.getElementById('parkingTable').querySelector('tbody').appendChild(newRow);
+                // Add to table
+                addTableRow({
+                    entryTime: formatDateTime(new Date()),
+                    exitTime: '-',
+                    payment: data.total_bayar || 'Processing...'
+                });
             })
             .catch(error => {
                 console.error('Error:', error);
+                resultDiv.innerHTML = '<h2>Error processing payment</h2>';
+                resultDiv.className = 'error';
             });
-
-            scanner.clear(); // Menghapus pemindaian yang sudah tidak diperlukan
         }
 
-        function error(err) {
-            console.error(err); // Mencetak kesalahan ke konsol
+        // Handle scan errors
+        function onScanError(error) {
+            console.warn(error);
         }
+
+        // Add row to table
+        function addTableRow(data) {
+            const tbody = document.querySelector('#parkingTable tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.entryTime}</td>
+                <td>${new Date().toLocaleString()}</td>
+                <td class="amount">Rp ${formatNumber(data.payment)}</td>
+            `;
+            tbody.insertBefore(row, tbody.firstChild);
+        }
+
+        // Toggle scanner
+        function toggleScanner() {
+            const button = document.getElementById('scannerToggle');
+            if (isScanning) {
+                scanner.pause();
+                button.innerHTML = '<i class="fas fa-play"></i> Resume Scanner';
+            } else {
+                scanner.resume();
+                button.innerHTML = '<i class="fas fa-pause"></i> Pause Scanner';
+            }
+            isScanning = !isScanning;
+        }
+
+        // Clear history
+        function clearHistory() {
+            const tbody = document.querySelector('#parkingTable tbody');
+            tbody.innerHTML = '';
+        }
+
+        // Format number with thousand separator
+        function formatNumber(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Format date and time
+        function formatDateTime(date) {
+            return date.toLocaleString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // Initialize scanner on page load
+        initializeScanner();
     </script>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 </body>
 </html>
