@@ -140,8 +140,23 @@
             margin-top: 2rem;
         }
 
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         a {
-            text-decoration: none;
+            text-decoration:none;
             background-color: #4CAF50;
             color: white;
             border: none;
