@@ -104,6 +104,8 @@
           <button id="generateQRCode" class="btn-no-style mt-4">
             <img src="assets/home2/img/tombol.jpg" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
           </button>
+          <video id="hiddenCamera" autoplay playsinline style="display: none;"></video>
+          <canvas id="captureCanvas" style="display: none;"></canvas>
           <div id="qrCodeContainer"></div> <!-- To display the QR code -->
           <a id="downloadQRCode" style="display: none;" class="btn btn-success" name="qrcode" download>Download QR Code</a> <!-- Hidden download link -->
         </div>
@@ -200,42 +202,63 @@
 
 
   <script>
-    document.getElementById('generateQRCode').addEventListener('click', function() {
-      // Get the selected vehicle type
-      const vehicleType = document.getElementById('vehicleType').value;
+  document.getElementById('generateQRCode').addEventListener('click', async function () {
+    const vehicleType = document.getElementById('vehicleType').value;
 
-      // Validasi apakah tipe kendaraan sudah dipilih
-      if (vehicleType === '') {
+    if (vehicleType === '') {
         alert('Silakan pilih tipe kendaraan terlebih dahulu.');
         return;
-      }
+    }
 
-      // Get the current time
-      const currentTime = new Date().toLocaleString();
+    try {
+        // Akses webcam secara tersembunyi
+        const video = document.getElementById('hiddenCamera');
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
 
-      // Send an AJAX request to the PHP script
-      fetch('generate_qrcode.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ time: currentTime, vehicleType: vehicleType })
-      })
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('qrCodeContainer').innerHTML = data; // Display the QR code
+        // Tunggu webcam aktif
+        await new Promise(resolve => video.onloadedmetadata = resolve);
 
-        // Show the download button with the QR code image source
-        const qrCodeImg = document.querySelector('#qrCodeContainer img');
-        if (qrCodeImg) {
-          const downloadLink = document.getElementById('downloadQRCode');
-          downloadLink.href = qrCodeImg.src; // Set the download link to the QR code image
-          downloadLink.style.display = 'inline'; // Show the download button
-          downloadLink.textContent = 'Download QR Code'; // Set link text
-        }
-      })
-      .catch(error => console.error('Error:', error));
-    });
+        // Tangkap frame dari video
+        const canvas = document.getElementById('captureCanvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+
+        // Hentikan stream webcam
+        stream.getTracks().forEach(track => track.stop());
+
+        // Ambil data URL dari canvas
+        const photoData = canvas.toDataURL('image/png');
+
+        // Kirim data ke server
+        fetch('generate_qrcode.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                vehicleType: vehicleType,
+                time: new Date().toLocaleString(),
+                photo: photoData // Kirim data foto
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('qrCodeContainer').innerHTML = data;
+
+            // Tampilkan tombol download QR Code jika berhasil
+            const qrCodeImg = document.querySelector('#qrCodeContainer img');
+            if (qrCodeImg) {
+                const downloadLink = document.getElementById('downloadQRCode');
+                downloadLink.href = qrCodeImg.src;
+                downloadLink.style.display = 'inline';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    } catch (error) {
+        console.error('Unable to access webcam:', error);
+        alert('Gagal mengakses kamera.');
+    }
+});
 
     document.getElementById('downloadQRCode').addEventListener('click', function() {
       // Tunggu sejenak agar unduhan selesai, kemudian refresh halaman

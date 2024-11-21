@@ -235,6 +235,7 @@
                             <th>Waktu Masuk</th>
                             <th>Waktu Keluar</th>
                             <th>Jumlah Pembayaran</th>
+                            <th>Foto Kendaraan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -276,7 +277,6 @@
             resultDiv.innerHTML = '<h2>Sukses!</h2>';
             resultDiv.className = 'success';
 
-            // Send data to server
             fetch('insert_data.php', {
                 method: 'POST',
                 headers: {
@@ -292,11 +292,12 @@
                     resultDiv.innerHTML += `<p>Total Pembayaran: <span class="amount">Rp ${formatNumber(data.total_bayar)}</span></p>`;
                 }
 
-                // Add to table
+                // Tambahkan data ke tabel
                 addTableRow({
                     entryTime: formatDateTime(new Date()),
                     exitTime: '-',
-                    payment: data.total_bayar || 'Processing...'
+                    payment: data.total_bayar || 'Processing...',
+                    foto_kendaraan: data.foto_kendaraan || 'uploads/default.png'
                 });
             })
             .catch(error => {
@@ -319,6 +320,7 @@
                 <td>${data.entryTime}</td>
                 <td>${new Date().toLocaleString()}</td>
                 <td class="amount">Rp ${formatNumber(data.payment)}</td>
+                <td><img src="${data.foto_kendaraan}" alt="Foto Kendaraan" style="width: 100px; height: auto;"></td>
             `;
             tbody.insertBefore(row, tbody.firstChild);
         }

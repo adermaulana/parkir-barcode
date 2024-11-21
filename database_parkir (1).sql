@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 07, 2024 at 11:27 AM
+-- Generation Time: Nov 21, 2024 at 10:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,8 +53,19 @@ CREATE TABLE `parkir` (
   `waktu_masuk` datetime DEFAULT NULL,
   `waktu_keluar` datetime DEFAULT NULL,
   `total_bayar` decimal(10,0) DEFAULT NULL,
-  `status` enum('Pending','Terbayar') NOT NULL DEFAULT 'Pending'
+  `status` enum('Pending','Terbayar') NOT NULL DEFAULT 'Pending',
+  `foto_kendaraan` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `parkir`
+--
+
+INSERT INTO `parkir` (`id`, `id_kendaraan`, `waktu_masuk`, `waktu_keluar`, `total_bayar`, `status`, `foto_kendaraan`) VALUES
+(43, 5, '2024-11-21 17:34:05', NULL, NULL, 'Pending', 'uploads/kendaraan/foto_1732181645.png'),
+(44, 6, '2024-11-21 17:34:30', NULL, NULL, 'Pending', 'uploads/foto_1732181670.png'),
+(45, 5, '2024-11-21 17:36:40', '2024-11-21 17:41:48', 4000, 'Pending', 'uploads/foto_1732181800.png'),
+(46, 5, '2024-11-21 17:46:04', '2024-11-21 21:57:36', 16000, 'Pending', 'uploads/foto_1732182364.png');
 
 -- --------------------------------------------------------
 
@@ -115,7 +126,7 @@ ALTER TABLE `kendaraan`
 -- AUTO_INCREMENT for table `parkir`
 --
 ALTER TABLE `parkir`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `users`

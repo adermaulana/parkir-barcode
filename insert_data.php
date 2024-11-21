@@ -25,55 +25,45 @@ $result = $stmt->get_result();
 $response = []; // Menyiapkan array untuk response
 
 if ($result->num_rows > 0) {
-    // Jika ada, ambil waktu_masuk dan tarif_parkir
+    // Jika data ditemukan
     $row = $result->fetch_assoc();
     $waktu_masuk = $row['waktu_masuk'];
     $tarif_parkir = $row['harga'];
+    $foto_kendaraan = $row['foto_kendaraan'] ?? 'uploads/default.png'; // Default jika null
 
-    // Hitung selisih waktu dalam jam
+    // Hitung total bayar
     $datetime1 = new DateTime($waktu_masuk);
     $datetime2 = new DateTime($waktu_keluar);
     $interval = $datetime1->diff($datetime2);
     $jam = $interval->h + ($interval->days * 24);
-    $total_bayar = 0; // Inisialisasi total bayar
+    $total_bayar = $jam < 1 ? $tarif_parkir : $jam * $tarif_parkir;
 
-    // Jika selisih waktu kurang dari 1 jam
-    if ($jam < 1) {
-        $total_bayar = $tarif_parkir; // Biaya minimum jika kurang dari 1 jam
-    } else {
-        // Hitung total bayar jika lebih dari 1 jam
-        $total_bayar = $jam * $tarif_parkir;
-    }
-
-    // Perbarui waktu_keluar dan total_bayar
+    // Update database
     $sql_update = "UPDATE parkir SET waktu_keluar = ?, total_bayar = ? WHERE waktu_masuk = ?";
     $stmt_update = $koneksi->prepare($sql_update);
-    // Menggunakan 's' untuk datetime dan 'i' untuk integer
-    $stmt_update->bind_param("sis", $waktu_keluar, $total_bayar, $qr_code_data); 
-
+    $stmt_update->bind_param("sis", $waktu_keluar, $total_bayar, $qr_code_data);
     if ($stmt_update->execute()) {
         $response['message'] = "Data waktu keluar dan total bayar berhasil diperbarui.";
-        $response['total_bayar'] = $total_bayar; // Kirim total bayar kembali ke front-end
+        $response['total_bayar'] = $total_bayar;
+        $response['foto_kendaraan'] = $foto_kendaraan; // Sertakan dalam respons
     } else {
         $response['error'] = "Error: " . $stmt_update->error;
     }
-
     $stmt_update->close();
 } else {
-    // Jika tidak ada, masukkan entri baru
+    // Jika data tidak ditemukan, masukkan entri baru
+    $response['foto_kendaraan'] = 'uploads/default.png'; // Default untuk data baru
     $sql_insert = "INSERT INTO parkir (id_kendaraan, waktu_masuk, waktu_keluar, total_bayar) VALUES (?, ?, ?, ?)";
-    $id_kendaraan = null; // Isi dengan ID kendaraan yang didapatkan dari QR code
-    $total_bayar = 4000; // Total bayar saat masuk
+    $id_kendaraan = null; // Misalnya, null untuk saat ini
+    $total_bayar = 4000; // Biaya minimum
     $stmt_insert = $koneksi->prepare($sql_insert);
-    $stmt_insert->bind_param("issi", $id_kendaraan, $qr_code_data, $waktu_keluar, $total_bayar); // 'issi' karena id_kendaraan adalah integer
-
+    $stmt_insert->bind_param("issi", $id_kendaraan, $qr_code_data, $waktu_keluar, $total_bayar);
     if ($stmt_insert->execute()) {
         $response['message'] = "Data berhasil disimpan.";
-        $response['total_bayar'] = $total_bayar; // Kirim total bayar
+        $response['total_bayar'] = $total_bayar;
     } else {
         $response['error'] = "Error: " . $stmt_insert->error;
     }
-
     $stmt_insert->close();
 }
 
