@@ -277,6 +277,12 @@
             resultDiv.innerHTML = '<h2>Sukses!</h2>';
             resultDiv.className = 'success';
 
+            // Hentikan scanner setelah berhasil memindai
+            if (scanner) {
+                scanner.clear(); // Hentikan scanner
+                isScanning = false; // Perbarui status scanning
+            }
+
             fetch('insert_data.php', {
                 method: 'POST',
                 headers: {
@@ -294,7 +300,7 @@
 
                 // Tambahkan data ke tabel
                 addTableRow({
-                    entryTime: formatDateTime(new Date()),
+                    entryTime: data.waktu_masuk,
                     exitTime: '-',
                     payment: data.total_bayar || 'Processing...',
                     foto_kendaraan: data.foto_kendaraan || 'uploads/default.png'
@@ -312,13 +318,25 @@
             console.warn(error);
         }
 
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('id-ID', {
+                year: '2-digit',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hourCycle: 'h23' // Gunakan format 24 jam
+            }).format(date);
+        }
+
         // Add row to table
         function addTableRow(data) {
             const tbody = document.querySelector('#parkingTable tbody');
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${data.entryTime}</td>
-                <td>${new Date().toLocaleString()}</td>
+                <td>${formatDate(new Date())}</td>
                 <td class="amount">Rp ${formatNumber(data.payment)}</td>
                 <td><img src="${data.foto_kendaraan}" alt="Foto Kendaraan" style="width: 100px; height: auto;"></td>
             `;

@@ -27,29 +27,36 @@ $response = []; // Menyiapkan array untuk response
 if ($result->num_rows > 0) {
     // Jika data ditemukan
     $row = $result->fetch_assoc();
-    $waktu_masuk = $row['waktu_masuk'];
-    $tarif_parkir = $row['harga'];
-    $foto_kendaraan = $row['foto_kendaraan'] ?? 'uploads/default.png'; // Default jika null
 
-    // Hitung total bayar
-    $datetime1 = new DateTime($waktu_masuk);
-    $datetime2 = new DateTime($waktu_keluar);
-    $interval = $datetime1->diff($datetime2);
-    $jam = $interval->h + ($interval->days * 24);
-    $total_bayar = $jam < 1 ? $tarif_parkir : $jam * $tarif_parkir;
-
-    // Update database
-    $sql_update = "UPDATE parkir SET waktu_keluar = ?, total_bayar = ? WHERE waktu_masuk = ?";
-    $stmt_update = $koneksi->prepare($sql_update);
-    $stmt_update->bind_param("sis", $waktu_keluar, $total_bayar, $qr_code_data);
-    if ($stmt_update->execute()) {
-        $response['message'] = "Data waktu keluar dan total bayar berhasil diperbarui.";
-        $response['total_bayar'] = $total_bayar;
-        $response['foto_kendaraan'] = $foto_kendaraan; // Sertakan dalam respons
+    // Periksa apakah waktu_keluar sudah diisi
+    if (!empty($row['waktu_keluar'])) {
+        $response['error'] = "Data sudah memiliki waktu keluar, tidak dapat diubah lagi.";
     } else {
-        $response['error'] = "Error: " . $stmt_update->error;
+        $waktu_masuk = $row['waktu_masuk'];
+        $tarif_parkir = $row['harga'];
+        $foto_kendaraan = $row['foto_kendaraan'] ?? 'uploads/default.png'; // Default jika null
+
+        // Hitung total bayar
+        $datetime1 = new DateTime($waktu_masuk);
+        $datetime2 = new DateTime($waktu_keluar);
+        $interval = $datetime1->diff($datetime2);
+        $jam = $interval->h + ($interval->days * 24);
+        $total_bayar = $jam < 1 ? $tarif_parkir : $jam * $tarif_parkir;
+
+        // Update database
+        $sql_update = "UPDATE parkir SET waktu_keluar = ?, total_bayar = ? WHERE waktu_masuk = ?";
+        $stmt_update = $koneksi->prepare($sql_update);
+        $stmt_update->bind_param("sis", $waktu_keluar, $total_bayar, $qr_code_data);
+        if ($stmt_update->execute()) {
+            $response['message'] = "Data waktu keluar dan total bayar berhasil diperbarui.";
+            $response['total_bayar'] = $total_bayar;
+            $response['waktu_masuk'] = $qr_code_data;
+            $response['foto_kendaraan'] = $foto_kendaraan; // Sertakan dalam respons
+        } else {
+            $response['error'] = "Error: " . $stmt_update->error;
+        }
+        $stmt_update->close();
     }
-    $stmt_update->close();
 } else {
     // Jika data tidak ditemukan, masukkan entri baru
     $response['foto_kendaraan'] = 'uploads/default.png'; // Default untuk data baru
@@ -61,6 +68,7 @@ if ($result->num_rows > 0) {
     if ($stmt_insert->execute()) {
         $response['message'] = "Data berhasil disimpan.";
         $response['total_bayar'] = $total_bayar;
+        $response['waktu_masuk'] = $qr_code_data;
     } else {
         $response['error'] = "Error: " . $stmt_insert->error;
     }
