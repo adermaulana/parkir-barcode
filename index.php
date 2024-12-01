@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -83,6 +84,7 @@
       </div>
       <div class="container text-center">
         <div class="d-flex flex-column justify-content-center align-items-center">
+
           <h1 data-aos="fade-up">Ambil Karcis Parkir</h1>
           <div class="form-group mt-5">
             <select class="form-control" id="vehicleType">
@@ -101,6 +103,11 @@
               ?>
             </select>
           </div>
+
+          <div class="form-group mt-3">
+              <input type="email" class="form-control" id="emailInput" placeholder="Masukkan email Anda" required>
+          </div>
+
           <button id="generateQRCode" class="btn-no-style mt-4">
             <img src="assets/home2/img/tombol.jpg" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
           </button>
@@ -202,13 +209,41 @@
 
 
   <script>
-  document.getElementById('generateQRCode').addEventListener('click', async function () {
+document.getElementById('generateQRCode').addEventListener('click', async function () {
     const vehicleType = document.getElementById('vehicleType').value;
+    const email = document.getElementById('emailInput').value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const generateButton = this;
+    const qrCodeContainer = document.getElementById('qrCodeContainer');
+    const downloadLink = document.getElementById('downloadQRCode');
 
+    // Create loader element
+    const loader = document.createElement('div');
+    loader.innerHTML = `
+        <div class="text-center mt-3">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Mohon tunggu, sedang membuat QR Code...</p>
+        </div>
+    `;
+
+    // Validate inputs
     if (vehicleType === '') {
         alert('Silakan pilih tipe kendaraan terlebih dahulu.');
         return;
     }
+
+    if (!email || !emailRegex.test(email)) {
+        alert('Silakan masukkan email yang valid.');
+        return;
+    }
+
+    // Disable button and show loader
+    generateButton.disabled = true;
+    qrCodeContainer.innerHTML = ''; // Clear previous content
+    qrCodeContainer.appendChild(loader);
+    downloadLink.style.display = 'none';
 
     try {
         // Akses webcam secara tersembunyi
@@ -232,40 +267,54 @@
         const photoData = canvas.toDataURL('image/png');
 
         // Kirim data ke server
-        fetch('generate_qrcode.php', {
+        const response = await fetch('generate_qrcode.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 vehicleType: vehicleType,
                 time: new Date().toLocaleString(),
-                photo: photoData // Kirim data foto
+                photo: photoData,
+                email: email
             })
-        })
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('qrCodeContainer').innerHTML = data;
+        });
 
-            // Tampilkan tombol download QR Code jika berhasil
-            const qrCodeImg = document.querySelector('#qrCodeContainer img');
-            if (qrCodeImg) {
-                const downloadLink = document.getElementById('downloadQRCode');
-                downloadLink.href = qrCodeImg.src;
-                downloadLink.style.display = 'inline';
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        const data = await response.text();
+        
+        // Tampilkan QR Code
+        qrCodeContainer.innerHTML = `
+            <div class="alert alert-success mt-3">
+                Sukses membuat QR Code. Silakan cek email Anda.
+            </div>
+        `;
+
+        setTimeout(() => {
+            location.reload();
+        }, 3000);
+        // Tampilkan tombol download QR Code jika berhasil
+        const qrCodeImg = document.querySelector('#qrCodeContainer img');
+        if (qrCodeImg) {
+            downloadLink.href = qrCodeImg.src;
+            downloadLink.style.display = 'inline';
+        }
     } catch (error) {
-        console.error('Unable to access webcam:', error);
-        alert('Gagal mengakses kamera.');
+        console.error('Error:', error);
+        qrCodeContainer.innerHTML = `
+            <div class="alert alert-danger mt-3">
+                Gagal membuat QR Code. Silakan coba lagi.
+            </div>
+        `;
+    } finally {
+        // Re-enable button
+        generateButton.disabled = false;
     }
 });
 
-    document.getElementById('downloadQRCode').addEventListener('click', function() {
-      // Tunggu sejenak agar unduhan selesai, kemudian refresh halaman
-      setTimeout(function() {
+document.getElementById('downloadQRCode').addEventListener('click', function() {
+    // Tunggu sejenak agar unduhan selesai, kemudian refresh halaman
+    setTimeout(function() {
         window.location.reload();
-      }, 1000); // Tunggu 1 detik sebelum refresh
-    });
+    }, 1000);
+});
   </script>
 
 </body>
