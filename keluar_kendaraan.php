@@ -253,8 +253,8 @@
 
     </div>
 
-    
 
+    <!-- fungsi mengambil data ke dalam database ketika scan qrcode -->
     <script>
         let isScanning = true;
         let scanner;

@@ -1,5 +1,7 @@
 <?php
 
+// menampilkan data di halaman keluar_kendaraan ketika sudah scan barcode
+
 include 'koneksi.php'; // Include your database connection
 
 // Assuming you get the vehicle ID or parking ID from the request

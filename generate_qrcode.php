@@ -1,4 +1,7 @@
 <?php
+
+// fungsi membuat qrcode dan mengirimkan ke email
+
 require 'vendor/autoload.php';
 
 use Endroid\QrCode\Builder\Builder;

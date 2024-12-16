@@ -208,6 +208,7 @@
   <script src="assets/home2/js/main.js"></script>
 
 
+  <!-- fungsi untuk melakukan pembuatan qrcode -->
   <script>
 document.getElementById('generateQRCode').addEventListener('click', async function () {
     const vehicleType = document.getElementById('vehicleType').value;

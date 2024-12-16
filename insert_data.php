@@ -1,4 +1,8 @@
+
+
 <?php
+
+// memasukkan data ke dalam database ketika scan qrcode
 
 include 'koneksi.php';
 
